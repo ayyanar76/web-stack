@@ -6,6 +6,9 @@ const movieSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    poster:{
+        type:String,    
+    },
     price:{
         type:Number,
         required:true
