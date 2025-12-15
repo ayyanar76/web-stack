@@ -1,5 +1,5 @@
 import express from 'express'
-import { deluser, login, logout, reguser,forgetpasssword } from '../Controllers.js/usercontrol.js';
+import { deluser, login, logout, reguser,forgetpasssword, resetPassword } from '../Controllers.js/usercontrol.js';
 import {  isverifyuser } from '../Middleware/Auth.js';
 
 const userRouter =express.Router()
@@ -9,6 +9,7 @@ userRouter.route('/login').post(login)
 userRouter.route('/logout').post(logout)
 userRouter.route('/deluser').delete(isverifyuser,deluser)
 userRouter.route('/forgetpassword').post(forgetpasssword)
+userRouter.route('/password/reset/:token').put(resetPassword)
 
 
 export default userRouter;

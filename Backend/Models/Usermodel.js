@@ -28,8 +28,9 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:"user"
     },
-    resetpasswordToken:String,
-    resetpasswordExpired:Date
+   resetpasswordToken: String,
+resetpasswordExpired: Date,
+
 },
 
 {
@@ -38,6 +39,9 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save",async function(next){
      if(!this.isModified("password")){
+        return next();
+     }
+     if(!this.password){
         return next();
      }
      this.password = await bcryptjs.hash(this.password,10)

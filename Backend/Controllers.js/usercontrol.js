@@ -1,3 +1,4 @@
+import { log } from "console";
 import Handleerror from "../Middleware/Handleerror.js";
 import users from "../Models/Usermodel.js"
 import { logintoken, sendToken } from "./token.js";
@@ -75,13 +76,41 @@ return  next(new Handleerror("The User Not Found", 404));
      user.resetpasswordToken = crypto.createHash('sha256').update(resetToken),
     user.resetpasswordExpired = Date.now() + 15*60*1000
 
-    await user.save({validateBeforeSave:false})
+    // await user.save({validateBeforeSave:false})
 
-    const resetUrl = `${req.protocol}://${req.get("host")}/v1/password/reset/:${resetToken}`
+    const resetUrl = `${req.protocol}://${req.get("host")}/v1/movies/password/reset/:${resetToken}`
 
     res.status(200).json({
       success:true,
       message:"Reset link Sent",
       resetUrl
+    })
+}
+
+export const resetPassword = async (req,res,next)=>{
+    const {token} = req.params
+
+    if(!token){
+        return next(new Handleerror("SomeThing went Wrong please try again",401))
+    }
+    const resetpasswordToken = crypto.createHash("sha256").update(token).digest("hex")
+    console.log(resetpasswordToken);
+    
+
+
+    const user = await users.findOne({resetpasswordToken:resetpasswordToken,resetpasswordExpired:{$gt:Date.now()}})
+    console.log(user);
+    
+    if(!user){
+        return next(new Handleerror("User Not found",401))
+    }
+    user.password = req.body.password,
+    user.resetpasswordToken = undefined
+    user.resetpasswordExpired = undefined
+
+    await user.save()
+    res.status(200).json({
+        success:true,
+        message:"Passward Was Changed"
     })
 }
