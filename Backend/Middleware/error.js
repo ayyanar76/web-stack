@@ -1,9 +1,12 @@
-export default (err,req,res,next)=>{
-    err.message = err.message || "Internal Server Error"
-    err.statuscode = err.statuscode || 500
+export default (err, req, res, next) => {
+  console.log("🔥 ERROR TYPE:", typeof err);
+  console.log("🔥 ERROR INSTANCE:", err instanceof Error);
 
-    res.status(err.statuscode).json({
-        success:false,
-        message:err.message
-    })
-}
+  err.statusCode = err.statusCode || 500;
+  err.message = err.message || "Internal Server Error";
+
+  res.status(err.statusCode).json({
+    success: false,
+    message: err.message
+  });
+};

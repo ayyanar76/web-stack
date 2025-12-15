@@ -1,7 +1,9 @@
+import Handleerror from "../Middleware/Handleerror.js";
+
 export const sendToken =(user,statuscode,res,next)=>{
      const token = user.getToken();
     if(!user || !token){
-    return next(new Handleerror("User or Token Doesn't Create tryagain later..."))
+    return next(new Handleerror("User or Token Doesn't Create tryagain later...",401))
 }
 const option = {expire:new Date(Date.now()+process.env.EXPIRE_TOKEN*24*60*60*100),httpOnly:true}
 
@@ -16,7 +18,7 @@ const option = {expire:new Date(Date.now()+process.env.EXPIRE_TOKEN*24*60*60*100
 export const logintoken =(user,statuscode,res,next)=>{
      const token = user.getToken();
     if(!user || !token){
-    return next(new Handleerror("User or Token Doesn't Create tryagain later..."))
+    return next(new Handleerror("User or Token Doesn't Create tryagain later...",401))
 }
 const option = {expire:new Date(Date.now()+process.env.EXPIRE_TOKEN*24*60*60*100),httpOnly:true}
 

@@ -21,7 +21,7 @@ export const Allmovies = async (req,res,next)=>{
     })
 }
 
-export const Addmovies = async (req,res)=>{
+export const Addmovies = async (req,res,next)=>{
     const addmovies = await movies.create(req.body)
 
      if(!addmovies){
@@ -34,7 +34,7 @@ export const Addmovies = async (req,res)=>{
     })
 }
 
-export const getmovie = async(req,res)=>{
+export const getmovie = async(req,res,next)=>{
     const id = req.params.id
    const getmovie = await movies.findById(id)
  if(!getmovie){

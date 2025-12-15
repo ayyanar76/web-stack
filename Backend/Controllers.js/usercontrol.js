@@ -1,6 +1,7 @@
 import Handleerror from "../Middleware/Handleerror.js";
 import users from "../Models/Usermodel.js"
 import { logintoken, sendToken } from "./token.js";
+import crypto from 'crypto'
 
 
 
@@ -29,7 +30,7 @@ export const login = async(req,res,next)=>{
     }
 }
 
-export const logout = async (req,res,next)=>{
+export const logout = async (req,res)=>{
      const option = {
         expire:new Date(Date.now()),
         httpOnly:true
@@ -59,4 +60,28 @@ export const deluser =  async(req,res,next)=>{
         message:"Account Deleted"
      })
      
+}
+
+
+export const forgetpasssword = async(req,res,next)=>{
+   
+
+  const user = await users.findOne({email:req.body.email})
+  if(!user){
+return  next(new Handleerror("The User Not Found", 404));
+  
+  }
+  const resetToken = crypto.randomBytes(20).toString("hex")
+     user.resetpasswordToken = crypto.createHash('sha256').update(resetToken),
+    user.resetpasswordExpired = Date.now() + 15*60*1000
+
+    await user.save({validateBeforeSave:false})
+
+    const resetUrl = `${req.protocol}://${req.get("host")}/v1/password/reset/:${resetToken}`
+
+    res.status(200).json({
+      success:true,
+      message:"Reset link Sent",
+      resetUrl
+    })
 }
